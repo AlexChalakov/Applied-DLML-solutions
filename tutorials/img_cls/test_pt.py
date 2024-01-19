@@ -1,41 +1,28 @@
 # test script
-# adapted from: https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
+# adapted from: https://www.tensorflow.org/tutorials/images/cnn
 
-import torch
-import torchvision
-import torchvision.transforms as transforms
+import tensorflow as tf
+from keras import models
+from keras.datasets import cifar10
 from PIL import Image
 
-from network_pt import Net
+## cifar-10 dataset
+(_, _), (test_images, test_labels) = cifar10.load_data()
+class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
-if __name__ == '__main__':
-    ## cifar-10 dataset
-    transform = transforms.Compose(
-        [transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+## load the trained model
+model = models.load_model('saved_model_tf')
 
-    batch_size = 4
+## inference
+num_images = 8
+# use the trained model to predict the labels of the test images
+outputs = model.predict(test_images[:num_images,...]/255.0)
+# get the index of the class with the highest probability?
+predicted = tf.argmax(outputs, 1)
+print('Ground-truth:' + ' '.join('%5s' % class_names[test_labels[j,0]] for j in range(num_images)))
+print('Predicted: ', ' '.join('%5s' % class_names[predicted[j]] for j in range(num_images)))
 
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
-    dataiter = iter(testloader)
-    classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
-
-    ## load the trained model
-    model = Net()
-    model.load_state_dict(torch.load('saved_model.pt'))
-
-
-    ## inference
-    images, labels = dataiter.next()
-    print('Ground-truth: ', ' '.join('%5s' % classes[labels[j]] for j in range(4)))
-
-    outputs = model(images)
-    _, predicted = torch.max(outputs, 1)
-    print('Predicted: ', ' '.join('%5s' % classes[predicted[j]] for j in range(4)))
-
-    # save to images
-    im = Image.fromarray((torch.cat(images.split(1,0),3).squeeze()/2*255+.5*255).permute(1,2,0).numpy().astype('uint8'))
-    im.save("test_pt_images.jpg")
-    print('test_pt_images.jpg saved.')
+# example images
+im = Image.fromarray(tf.concat([test_images[i,...] for i in range(num_images)],1).numpy())
+im.save("test_tf_images.jpg")
+print('test_tf_images.jpg saved.')

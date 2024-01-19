@@ -2,11 +2,11 @@
 [UCL Module](https://www.ucl.ac.uk/module-catalogue/modules/applied-deep-learning-COMP0197) | [CS](https://www.ucl.ac.uk/computer-science/) | [UCL Moodle Page]()
 >Term 2, Academic Year 2022-23 
 
-
 **Module Lead**  
 Yipeng Hu <yipeng.hu@ucl.ac.uk>
 
-
+**Solutions and changes by**  
+Aleksandar Chalakov <aleksandar.chalakov.23@ucl.ac.uk>
 	
 ## 1. Development environment
 The module tutorials (see bellow) and coursework use Python, NumPy and an option between TensorFlow and PyTorch. The [Development environment](docs/dev.md) document contains details of the supported development environment, though it is not mandatory.  
